@@ -5,6 +5,7 @@ import DetailPage from './pages/DetailPage';
 import AuthorPage from './pages/AuthorPage';
 import MyNavbar from './components/MyNavbar';
 import AuthorDetailPage from './pages/AuthorDetailPage';
+import MyFooter from './components/MyFooter';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/author" element={<AuthorPage />} />
           <Route path="/author/:id" element={<AuthorDetailPage />} />
         </Routes>
+        <MyFooter />
       </BrowserRouter>
     </>
   );
