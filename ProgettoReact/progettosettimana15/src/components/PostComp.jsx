@@ -24,7 +24,7 @@ export default function PostComp() {
 
 
   useEffect(() => {
-    axios.get(url + "posts?_embed")
+    axios.get(url + "posts?_embed&per_page=12")
       .then((response) => setPosts(response.data))
       .catch((error) => console.error(error));
   }, []);
