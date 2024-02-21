@@ -1,84 +1,95 @@
-import { useEffect, useState } from "react";
 import { url } from "../data/data.js";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import Form from "react-bootstrap/Form";
-import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Button, Card, Spinner } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function PostComp() {
   const [posts, setPosts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(url + "posts?_embed")
-      .then((response) => response.json())
-      .then((data) => setPosts(data));
-  }, []);
-
-  useEffect(() => {
-    if (searchTerm.trim() === "") {
+    if (search.trim() === "") {
       setFilteredPosts(posts);
     } else {
       const filtered = posts.filter((post) =>
-        post.title.rendered.toLowerCase().includes(searchTerm.toLowerCase())
+        post.title.rendered.toLowerCase().includes(search.toLowerCase())
       );
       setFilteredPosts(filtered);
     }
-  }, [searchTerm, posts]);
+  }, [search, posts]);
+
+
+  useEffect(() => {
+    axios.get(url + "posts?_embed")
+      .then((response) => setPosts(response.data))
+      .catch((error) => console.error(error));
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
   };
 
   return (
-    <>
-      <div>
-        <Form.Group className="mb-3" onSubmit={handleSearch}>
-          <Form.Control type="text"
-            placeholder="Cerca..."
-            className="mr-sm-2 w-75 mx-auto"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)} />
-        </Form.Group>
-        <div className="d-flex flex-wrap justify-content-center justify-items-start">
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
-              <Card
-                key={post.id}
-                className="col-lg-3 col-md-5 col-sm-12 mx-lg-1 mx-md-2 mx-sm-1 my-1"
-                style={{ minHeight: "22rem", width: "25rem" }}
-              >
+    <div>
+      <Form onSubmit={handleSearch} className="mb-3">
+        <Form.Control type="text"
+          placeholder="Cerca..."
+          className="mr-sm-2 w-75 mx-auto"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)} />
+      </Form>
+
+      <div className="d-flex flex-wrap justify-content-center justify-items-start">
+        {filteredPosts.length > 0 ? (
+          filteredPosts.map((post) => (
+            <Card
+              key={post.id}
+              className="col-lg-3 col-md-5 col-sm-12 mx-lg-2 mx-md-2 mx-sm-1 my-2 shadow-lg homePostCard"
+              style={{ minHeight: "16rem", width: "24rem", borderRadius: "7px" }}>
+              {post._embedded["wp:featuredmedia"] && post._embedded["wp:featuredmedia"].length > 0 && (
                 <Card.Img
                   variant="top"
                   src={post._embedded['wp:featuredmedia']['0'].source_url}
-                  style={{ height: "15rem" }}
+                  style={{ height: "14rem", borderTopLeftRadius: "7px", borderTopRightRadius: "7px" }}
                 />
-                <Card.Body>
-                  <div style={{ height: "20rem" }}>
-                    <Card.Title>{post.title.rendered}</Card.Title>
-                    <Card.Text>
-                      <span
-                        dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
-                      />
-                    </Card.Text>
-                    <Card.Text>
-                      {post.yoast_head_json.author} | {post.date.slice(0, -9)}
-                    </Card.Text>
-                  </div>
+              )}
+              <Card.Body style={{ height: "20rem" }}>
+                <Card.Title className="text-center font-weight-bold">{post.title.rendered}</Card.Title>
+                <Card.Text>
+                  <span
+                    dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
+                  />
+                </Card.Text>
+                <div>
+                  <Card.Text className="text-end">
+                    <Link to={`/author/${post.author}`} className='fw-bold text-decoration-none'>{post._embedded.author[0].name}</Link>: {post.date.slice(0, -9)}
+                  </Card.Text>
                   <Button onClick={() => navigate(`/posts/${post.id}`)}
-                    variant="primary position-absolute bottom-0 my-2">
+                    variant="primary position-absolute bottom-0 my-2"
+                    style={{ borderRadius: "15px" }}
+                  >
                     Scopri di piu!
                   </Button>
-                </Card.Body>
-              </Card>
-            ))
-          ) : (
-            <p>Nessun risultato trovato.</p>
-          )}
-        </div>
+                </div>
+              </Card.Body>
+            </Card>
+
+          ))
+        ) : (
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Caricamento...</span>
+          </Spinner>
+        )}
       </div>
-    </>
+
+
+
+    </div>
   );
+
 }
+
