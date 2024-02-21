@@ -53,7 +53,9 @@ export default function AuthorComp() {
         }
         <ListGroup as="ol" numbered>
           {posts.map((post) => (
-            <ListGroup.Item onClick={() => navigate(`/posts/${post.id}`)} action variant="dark" key={post.id}>{post.title.rendered}</ListGroup.Item>
+            <ListGroup.Item onClick={() => navigate(`/posts/${post.id}`)} action variant="dark" key={post.id}><span
+              dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+            /></ListGroup.Item>
           ))}
         </ListGroup>
       </Container >

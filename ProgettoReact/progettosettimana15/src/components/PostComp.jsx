@@ -49,7 +49,7 @@ export default function PostComp() {
             <Card
               key={post.id}
               className="col-lg-3 col-md-5 col-sm-12 mx-lg-2 mx-md-2 mx-sm-1 my-2 shadow-lg homePostCard"
-              style={{ minHeight: "16rem", width: "24rem", borderRadius: "7px" }}>
+              style={{ minHeight: "16rem", width: "25rem", borderRadius: "7px" }}>
               {post._embedded["wp:featuredmedia"] && post._embedded["wp:featuredmedia"].length > 0 && (
                 <Card.Img
                   variant="top"
@@ -57,8 +57,12 @@ export default function PostComp() {
                   style={{ height: "14rem", borderTopLeftRadius: "7px", borderTopRightRadius: "7px" }}
                 />
               )}
-              <Card.Body style={{ height: "20rem" }}>
-                <Card.Title className="text-center font-weight-bold">{post.title.rendered}</Card.Title>
+              <Card.Body style={{ height: "100%", position: "relative" }}>
+                <Card.Title className="text-center font-weight-bold">
+                  <span
+                    dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                  />
+                </Card.Title>
                 <Card.Text>
                   <span
                     dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}

@@ -1,1 +1,1 @@
-export const url = "http://localhost/ProgettoSettimana15/wordpress/wp-json/wp/v2/";
+export const url = "https://www.formulapassion.it/wp-json/wp/v2/";

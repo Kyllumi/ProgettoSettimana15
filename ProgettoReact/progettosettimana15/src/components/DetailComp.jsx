@@ -33,7 +33,9 @@ export default function DetailComp() {
       {detail.title &&
         <div className='container my-5'>
 
-          <h2 className='text-center mb-4'>{detail.title.rendered}</h2>
+          <h2 className='text-center mb-4'><span
+                    dangerouslySetInnerHTML={{ __html: detail.title.rendered }}
+                  /></h2>
           <div className='d-flex justify-content-center align-items-center my-3'>
             {detail._embedded?.['wp:featuredmedia']?.[0]?.source_url &&
               <div className='mx-3' style={{ width: '40%' }}>
